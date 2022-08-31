@@ -119,6 +119,9 @@ public class KafkaCommon {
         String username;
         String password;
 
+        /* Jamieson Walker code change to set SSL verification type */
+        properties.put("ssl.endpoint.identification.algorithm", "");
+
         if (adminClient) {
             username = brokerAuthentication.getAdminUsername();
             password = brokerAuthentication.getAdminPassword();
