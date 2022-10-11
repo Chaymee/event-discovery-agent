@@ -127,6 +127,34 @@ public class CommonModelToAsyncAPIMapper_2_2 extends CommonModelToAsyncApiMapper
                     }
                 }
                 root.getJSONObject("channels").put(channel.getName(), channelObj);
+
+            // Add maping for rabbitMQ Queues https://github.com/asyncapi/bindings/tree/master/amqp
+            } else if (channelType.equals("Queue")) {
+                JSONObject channelObj = new JSONObject();
+                JSONObject bindingsObj = new JSONObject();
+                JSONObject amqpObj = new JSONObject();
+                JSONObject queueObj = new JSONObject();
+
+
+
+                // populate AMQP object
+                if (((channel.getAdditionalAttributes().get("Node")).toString().contains("rabbit"))) {
+                    // populate queue object
+                    queueObj.put("name", channel.getId().toString());
+                    queueObj.put("durable", "dontKnowYet");
+                    queueObj.put("exclusive", "dontKnowYet");
+                    queueObj.put("autodelete", "dontknowyet");
+                    queueObj.put("Vhost", channel.getAdditionalAttributes().get("Vhost").toString());
+
+                    amqpObj.put("is", channelType);
+                    bindingsObj.put(channelType, queueObj);
+                    amqpObj.put("amqp", bindingsObj);
+
+                }
+
+                // populate bindings object
+                channelObj.put("bindings", amqpObj);
+                root.getJSONObject("channels").put(channel.getName(), channelObj);
             }
         }
     }
